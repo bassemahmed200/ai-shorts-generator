@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shorts & Reels Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-4">
+                AI Shorts & Reels Generator
+            </h1>
+            <p class="text-gray-400 text-lg font-bold">Turn long videos into viral short clips automatically with AI.</p>
+            <p class="text-blue-500 text-sm mt-2 font-bold">Built by Eng. Besso - <a href="https://portfolio-nkpd.vercel.app/" target="_blank" class="hover:text-blue-400 underline">Portfolio</a></p>
+        </header>
+
+        <main class="bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
+            <form id="jobForm" class="space-y-6">
+                <!-- Input Source -->
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2">1. Video Source</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">YouTube / Video URL</label>
+                            <input type="url" id="videoUrl" name="video_url" placeholder="https://youtube.com/watch?v=..." class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors">
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <span class="text-gray-500 font-medium">OR</span>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Upload Video File (up to 5GB)</label>
+                            <input type="file" id="videoFile" name="file" accept="video/mp4,video/x-m4v,video/*" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 transition-colors">
+                            <p class="text-xs text-gray-500 mt-1">Files are uploaded directly to cloud storage. Supports any video format.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Progress (Hidden by default) -->
+                <div id="uploadSection" class="hidden mt-4 p-4 bg-gray-900 rounded-xl border border-gray-700">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold" id="uploadStatus">Uploading...</h3>
+                        <span id="uploadPercent" class="text-purple-400 font-bold">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                        <div id="uploadBar" class="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="space-y-4 pt-6 border-t border-gray-700">
+                    <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2">2. AI Settings</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Transcription Method</label>
+                            <select name="transcription_method" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors">
+                                <option value="groq">Cloud (Groq Whisper)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Analysis Provider</label>
+                            <select name="analysis_provider" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors">
+                                <option value="groq">Groq (LLaMA 3.3) - Recommended</option>
+                                <option value="gemini">Google Gemini 1.5</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Number of Clips</label>
+                            <input type="number" name="num_clips" value="3" min="1" max="10" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Target Duration (Seconds)</label>
+                            <input type="number" name="clip_duration" value="30" min="15" max="90" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-1">Crop Style</label>
+                            <select name="crop_style" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500 transition-colors">
+                                <option value="portrait">Portrait (9:16) - TikTok/Reels/Shorts</option>
+                                <option value="landscape">Landscape (16:9) - YouTube</option>
+                                <option value="square">Square (1:1) - Instagram/Facebook</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" id="startBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:scale-[1.02] active:scale-[0.98]">
+                        Generate Viral Shorts 🚀
+                    </button>
+                </div>
+            </form>
+
+            <!-- Progress Section (Hidden by default) -->
+            <div id="progressSection" class="hidden mt-10 p-6 bg-gray-900 rounded-xl border border-gray-700">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold" id="statusText">Initializing...</h3>
+                    <span id="progressPercent" class="text-purple-400 font-bold">0%</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-4 mb-4 overflow-hidden">
+                    <div id="progressBar" class="bg-gradient-to-r from-purple-500 to-pink-500 h-4 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+                <p id="errorText" class="text-red-400 text-sm hidden"></p>
+            </div>
+
+            <!-- Results Section (Hidden by default) -->
+            <div id="resultsSection" class="hidden mt-12">
+                <h2 class="text-3xl font-bold mb-6 text-center text-purple-300">Generated Clips 🎉</h2>
+                <div id="clipsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Clips will be injected here via JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Template for a single clip card -->
+    <template id="clipCardTemplate">
+        <div class="bg-gray-800 rounded-xl overflow-hidden shadow-xl border border-gray-700 flex flex-col transform transition hover:scale-[1.03]">
+            <div class="relative pt-[177.77%] w-full bg-black"> <!-- 9:16 Aspect Ratio -->
+                <video class="absolute top-0 left-0 w-full h-full object-contain" controls preload="metadata"></video>
+            </div>
+            <div class="p-5 flex-grow flex flex-col">
+                <h3 class="text-xl font-bold text-white mb-2 clip-title line-clamp-2"></h3>
+                <div class="flex items-center mb-3">
+                    <span class="bg-purple-900 text-purple-200 text-xs font-bold px-2 py-1 rounded-full border border-purple-700 clip-score"></span>
+                </div>
+                <p class="text-gray-400 text-sm mb-4 clip-reason flex-grow line-clamp-3"></p>
+                <div class="hooks-section mb-4">
+                    <p class="text-xs text-gray-500 mb-2 font-semibold uppercase">Generated Hooks:</p>
+                    <div class="hooks-list space-y-2"></div>
+                </div>
+                <a href="#" class="clip-download w-full inline-block text-center bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-gray-600" download>
+                    Download Clip
+                </a>
+            </div>
+        </div>
+    </template>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

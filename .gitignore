@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+venv*/
+.venv/
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+
+# Virtual Environment
+venv/
+env/
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+storage/downloads/
+storage/audio/
+storage/clips/
+storage/subtitles/
+*.mp4
+*.mp3
+*.wav
+*.ass
+*.srt
+
+# Logs
+*.log
+server.log
+
+# Temporary files
+*.tmp
+*.temp
